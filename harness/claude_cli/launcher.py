@@ -59,6 +59,9 @@ PROTECTED_PATHS = (PROJECT, HOME/'.config/rax', HOME/'.claude', HOME/'.claude.js
 # calibration): every path that grants direct robot access, listed by the operator. Colon-separated,
 # like PATH; the backend option `protected_paths` adds more per session.
 SITE_PATHS_ENVIRONMENT = 'RAX_PROTECTED_PATHS'
+# The site's robot hosts off loopback (controller PC, Desk), colon-separated: the sandbox proxy refuses them
+# although every other domain is allowed.
+DENIED_HOSTS_ENVIRONMENT = 'RAX_DENIED_HOSTS'
 # On Linux the Bash sandbox can only allow all Unix sockets or none (seccomp cannot filter
 # by path), and the agent's scripts need the robot service socket. These hosts sockets
 # would bypass the robot service (docker controls the robot containers) or leak the
@@ -113,6 +116,11 @@ def site_paths(config):
     return paths
 
 
+def denied_hosts():
+    hosts = [host for host in os.environ.get(DENIED_HOSTS_ENVIRONMENT, '').split(':') if host]
+    return {'deniedDomains': hosts} if hosts else {}
+
+
 def protected_paths(config):
     return [*PROTECTED_PATHS, *site_paths(config), *(config.root/name for name in PRIVATE_FILES)]
 
@@ -141,7 +149,8 @@ def settings(config, workspace, socket):
             'filesystem': {'allowWrite': [str(workspace)],
                            'denyRead': [str(p) for p in (*protected, *HIDDEN_SOCKETS)]},
             # Internet over the sandbox's HTTP(S) proxy; loopback (the robot bridges) stays closed.
-            'network': {'allowAllUnixSockets': True, 'allowLocalBinding': False, 'allowedDomains': ['*']},
+            'network': {'allowAllUnixSockets': True, 'allowLocalBinding': False, 'allowedDomains': ['*'],
+                        **denied_hosts()},
         },
         'autoUpdates': False, 'includeCoAuthoredBy': False, 'cleanupPeriodDays': 3650,
         'env': {

@@ -114,3 +114,10 @@ def test_resume_budget_excludes_usage_waits(tmp_path):
     record.write_text(json.dumps({'started_at': 100.0, 'finished_at': 400.0, 'usage_wait_seconds': 100.0,
                                   'attempts': [{'started_at': 0.0, 'finished_at': 50.0}]}))
     assert launcher.attempt_seconds(launcher.resumable_lifecycle(record)) == 250.0
+
+
+def test_denied_hosts_reach_the_sandbox(tmp_path, monkeypatch):
+    from harness.claude_cli import launcher
+    assert launcher.denied_hosts() == {}
+    monkeypatch.setenv('RAX_DENIED_HOSTS', '10.0.0.2:10.0.0.3')
+    assert launcher.denied_hosts() == {'deniedDomains': ['10.0.0.2', '10.0.0.3']}

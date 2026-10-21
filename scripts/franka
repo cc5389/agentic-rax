@@ -88,8 +88,8 @@ elif action == 'home':
     for fraction in np.linspace(0, 1, 61):  # table clearance along the straight joint path
         frames = joint_frames(start + fraction * (goal - start))
         low = min(frame[2, 3] for frame in frames[3:9])
-        if low < 0.10:
-            sys.exit(f'path to home brings the arm to z={low:.3f} m at {fraction:.0%} (table at 0.09 m); '
+        if low < -0.20:
+            sys.exit(f'path to home brings the arm to z={low:.3f} m at {fraction:.0%} (table at -0.21 m); '
                      'guide the arm up first')
     step = float(np.max(np.abs(goal - start)))
     seconds = max(4.0, step / 0.3)

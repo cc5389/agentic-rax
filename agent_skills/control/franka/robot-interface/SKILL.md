@@ -17,7 +17,7 @@ emergency stop. Everything you command happens physically.
 - Gripper pointing straight down: the TCP z axis points along base -z. Read the current
   `tcp_quaternion` from `{{ robot.status }}` and keep it unless you need a new
   orientation; to yaw about the vertical, rotate that quaternion about base z.
-- The table top is at z ~= 0.09 m. Objects' metric positions come from
+- The table top is at z ~= -0.21 m. Objects' metric positions come from
   [object-localization](../object-localization/SKILL.md).
 
 ## Tools

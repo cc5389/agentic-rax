@@ -40,7 +40,7 @@ HOME_Q = (0.0, -0.785398, 0.0, -2.356194, 0.0, 1.570796, 0.785398)  # libfranka 
 DEFAULTS = {
     'arm_url': 'http://127.0.0.1:50054',
     'gripper_url': 'http://127.0.0.1:50053',
-    # TCP workspace box in the base frame (metres). The table top is at z ~= 0.09.
+    # TCP workspace box in the base frame (metres). The table top is at z ~= -0.21 (robopil rig).
     'workspace_min': [0.25, -0.45, 0.10],
     'workspace_max': [0.80, 0.45, 0.70],
     'workspace_guard_margin_m': 0.02,    # measured TCP may overshoot the box this much
@@ -597,7 +597,7 @@ class FrankaBackend:
                  'joints': np.round(np.asarray(state['arm_joint_position']), 4).tolist(),
                  'controller_running': bool(state.get('policy_running')),
                  'workspace_box': {'min': self.box_min.tolist(), 'max': self.box_max.tolist()},
-                 'table_z_m': 0.09, 'cameras': sorted(self.models), 'depth': self.depth,
+                 'table_z_m': -0.21, 'cameras': sorted(self.models), 'depth': self.depth,
                  'stream': None if self.stream is None else {
                      'directory': 'runtime/stream', 'window_s': self.options['stream_window_s'],
                      'fps': self.options['stream_fps'], 'depth_hz': self.options['stream_depth_hz'],

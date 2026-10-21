@@ -23,3 +23,6 @@
 .vscode/
 # Isolated local feature checkouts.
 /.worktrees/
+
+# Site configuration (lab IPs, camera serials, calibration): kept out of the public fork.
+/site
